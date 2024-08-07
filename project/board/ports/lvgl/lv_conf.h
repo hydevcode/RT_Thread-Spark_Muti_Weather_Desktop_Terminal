@@ -18,7 +18,7 @@
 #define LV_COLOR_SCREEN_TRANSP 0
 #define LV_COLOR_MIX_ROUND_OFS 0
 #define LV_COLOR_CHROMA_KEY lv_color_hex(0x00ff00)         /*pure green*/
-#define LV_MEM_BUF_MAX_NUM 16
+#define LV_MEM_BUF_MAX_NUM 8
 #define LV_MEMCPY_MEMSET_STD 0
 #define LV_USE_PERF_MONITOR     0
 #define LV_MEM_SIZE (8U * 512U)

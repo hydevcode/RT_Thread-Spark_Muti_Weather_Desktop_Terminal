@@ -88,19 +88,14 @@ void lv_port_disp_init(void)
 
     /*GCC*/
 #if defined ( __GNUC__ )
-    static lv_color_t buf_1[MY_DISP_HOR_RES * MY_DISP_HOR_RES / 5] __attribute__((section(".LVGLccm")));                          /*A buffer for 10 rows*/
-    /*MDK*/
-#elif defined ( __CC_ARM )
-    __attribute__((at(0x10000000))) lv_color_t buf_1[LCD_H * LCD_W / 2];
+    static lv_color_t buf_1[(MY_DISP_HOR_RES * MY_DISP_HOR_RES / 240)] __attribute__((section(".LVGLccm")));                          /*A buffer for 10 rows*/
 #endif
 
-    // lv_disp_draw_buf_init(&draw_buf_dsc_1, buf_1, NULL, MY_DISP_HOR_RES * MY_DISP_HOR_RES / 8);   /*Initialize the display buffer*/
-        lv_memset_00(&draw_buf_dsc_1, sizeof(lv_disp_draw_buf_t));
-    // rt_memset(draw_buf_dsc_1, 0, sizeof(lv_disp_draw_buf_t));
+    lv_memset_00(&draw_buf_dsc_1, sizeof(lv_disp_draw_buf_t));
     draw_buf_dsc_1.buf1    = buf_1;
     draw_buf_dsc_1.buf2    = NULL;
     draw_buf_dsc_1.buf_act = draw_buf_dsc_1.buf1;
-    draw_buf_dsc_1.size    = MY_DISP_HOR_RES * MY_DISP_HOR_RES / 5;
+    draw_buf_dsc_1.size    = (MY_DISP_HOR_RES * MY_DISP_HOR_RES / 240);
     
     /*-----------------------------------
      * Register the display in LVGL
@@ -120,14 +115,6 @@ void lv_port_disp_init(void)
 
     /*Set a display buffer*/
     disp_drv.draw_buf = &draw_buf_dsc_1;
-
-    /*Required for Example 3)*/
-    // disp_drv.full_refresh = 1;
-
-    /* Fill a memory array with a color if you have GPU.
-     * Note that, in lv_conf.h you can enable GPUs that has built-in support in LVGL.
-     * But if you have a different GPU you can use with this callback.*/
-    //disp_drv.gpu_fill_cb = gpu_fill;
 
     /*Finally register the driver*/
     lv_disp_drv_register(&disp_drv);
@@ -169,25 +156,6 @@ static void disp_flush(lv_disp_drv_t * disp_drv, const lv_area_t * area, lv_colo
 
     lv_disp_flush_ready(disp_drv);
 }
-
-/*OPTIONAL: GPU INTERFACE*/
-
-/*If your MCU has hardware accelerator (GPU) then you can use it to fill a memory with a color*/
-//static void gpu_fill(lv_disp_drv_t * disp_drv, lv_color_t * dest_buf, lv_coord_t dest_width,
-//                    const lv_area_t * fill_area, lv_color_t color)
-//{
-//    /*It's an example code which should be done by your GPU*/
-//    int32_t x, y;
-//    dest_buf += dest_width * fill_area->y1; /*Go to the first line*/
-//
-//    for(y = fill_area->y1; y <= fill_area->y2; y++) {
-//        for(x = fill_area->x1; x <= fill_area->x2; x++) {
-//            dest_buf[x] = color;
-//        }
-//        dest_buf+=dest_width;    /*Go to the next line*/
-//    }
-//}
-
 
 #else /*Enable this file at the top*/
 

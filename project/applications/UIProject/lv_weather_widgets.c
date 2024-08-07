@@ -11,6 +11,8 @@
 #include "weather.h"
 #include "led_clock.h"
 #include "aht10.h"
+#include "mqtt_main.h"
+#include "ap3216c.h"
 #if LV_MEM_CUSTOM == 0 && LV_MEM_SIZE < (38ul * 1024ul)
     #error Insufficient memory for lv_demo_widgets. Please set LV_MEM_SIZE to at least 38KB (38ul * 1024ul).  48KB is recommended.
 #endif
@@ -19,11 +21,16 @@
  *      DEFINES
  *********************/
 #define AHT21_I2C_BUS "i2c3"
-
+#define LIGHT_I2C_BUS "i2c2"
 struct rt_thread AHT21_t;
 aht10_device_t Dev = RT_NULL;
 float Humi,Temp;
 rt_uint8_t aht21_thread_stack[800];
+
+
+ap3216c_device_t dev_light;
+rt_uint16_t ps_data;
+float brightness;
 /**********************
  *      TYPEDEFS
  **********************/
@@ -55,6 +62,7 @@ void timer_callback(lv_timer_t *timer)
 {
    struct weather_info *winfo;
    winfo=rt_malloc(sizeof(struct weather_info));
+
     rt_memset(winfo, 0x00, sizeof(struct weather_info));
     weather_get_test(winfo);
 
@@ -79,16 +87,29 @@ void timer_callback(lv_timer_t *timer)
     rt_free(winfo);
 }
 static lv_timer_t *timer2 = NULL;
+int count=0;
 void timer2_callback(lv_timer_t *timer)
 {
         Humi=aht10_read_humidity(Dev);
         Temp=aht10_read_temperature(Dev);
         char buf[40]={'\0'};
-        rt_sprintf(buf, "温度:%.2f°C  湿度:%.2f %", Temp,Humi);
+        rt_sprintf(buf, "温度:%.2f°C  湿度:%.2f ", Temp,Humi);
+        strcat(buf,"%");
         lv_label_set_text(title, buf);
+        if(count>5){
+        ps_data = ap3216c_read_ps_data(dev_light);
+        brightness = ap3216c_read_ambient_light(dev_light);
+        char           *payload = "{\"params\":{\"CurrentTemperature\": %.2f,\"CurrentHumidity\": %.2f,\"LightLux\": %.2f,\"ps_data\": %d}}";
+        char payload_t[100]={'\0'};
+        rt_sprintf(payload_t, payload, Temp,Humi,brightness,ps_data);
+        mqtt_main_publish(pclient,payload_t);
+        count=0;
+        }
+        count++;
         led_matrix_example_entry();
  
 }
+
 static disp_size_t disp_size;
 static const lv_font_t * font_large;
 static const lv_font_t * font_normal;
@@ -109,7 +130,12 @@ void lv_weather_widgets(void)
         rt_kprintf("aht10 init failed\n");
         return;
     }
-
+    dev_light = ap3216c_init(LIGHT_I2C_BUS);
+    if (dev_light == RT_NULL)
+    {
+        rt_kprintf("The sensor initializes failure.");
+        return;
+    }
     lv_obj_set_style_text_font(lv_scr_act(), font_normal, 0);
     static lv_style_t style_border;
     // lv_style_set_text_color(&style_title, lv_theme_get_color_primary(NULL));
@@ -129,7 +155,7 @@ void lv_weather_widgets(void)
     // lv_style_set_text_color(&style_title, lv_theme_get_color_primary(NULL));
     lv_style_set_text_font(&style_text, font_normal);
     lv_style_set_align(&style_text, LV_ALIGN_CENTER);
-    lv_style_set_pad_all(&style_text, 0);
+    lv_style_set_pad_all(&style_text, 3);
 
     lv_obj_t *layout1= lv_obj_create(page1);
     lv_obj_set_size(layout1, LV_VER_RES-15, LV_HOR_RES-55);
@@ -263,9 +289,10 @@ void lv_weather_widgets(void)
     lv_timer_ready(timer);
 
     timer2 = lv_timer_create(timer2_callback, 1000, NULL);
+ 
 
-    lv_timer_enable(timer2);
-
+ 
+   mqtt_main_thread_init();
 }
 void lv_weather_widgets_close(void)
 {

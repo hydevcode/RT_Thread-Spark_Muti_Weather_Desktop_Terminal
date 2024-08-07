@@ -8,7 +8,10 @@
  */
 
 #include <board.h>
-
+#include <rtthread.h>
+#include <rtdevice.h>
+#include <drv_gpio.h>
+#include "stm32f4xx_hal_i2s.h"
 #include "drv_es8388.h"
 
 #define DBG_TAG              "drv.mic"
@@ -38,7 +41,7 @@ static void I2S3_Init(void)
     PeriphClkInitStruct.PLLI2S.PLLI2SR = 2;
     if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
     {
-        Error_Handler();
+        // Error_Handler();
     }
     HAL_I2S_DeInit(&I2S3_Handler);
 
@@ -53,7 +56,7 @@ static void I2S3_Init(void)
     I2S3_Handler.Init.FullDuplexMode = I2S_FULLDUPLEXMODE_ENABLE;
     if (HAL_I2S_Init(&I2S3_Handler) != HAL_OK)
     {
-        Error_Handler();
+        // Error_Handler();
     }
 
     SET_BIT(I2S3_Handler.Instance->CR2, SPI_CR2_RXDMAEN);
@@ -360,7 +363,14 @@ int rt_hw_mic_init(void)
     mic_dev.audio.ops = &mic_ops;
     rt_audio_register(&mic_dev.audio, "mic0", RT_DEVICE_FLAG_RDONLY, &mic_dev);
 
+
+
     return RT_EOK;
 }
-
+void audio_test(){
+    mic_init(&mic_dev.audio);
+    sound_init(&mic_dev.audio);
+    mic_start(&mic_dev.audio,AUDIO_STREAM_RECORD);
+}
+MSH_CMD_EXPORT(audio_test,audio_test);
 INIT_DEVICE_EXPORT(rt_hw_mic_init);

@@ -54,7 +54,7 @@ if PLATFORM == 'gcc':
     CPATH = ''
     LPATH = ''
 
-    if BUILD == 'debug':
+    if BUILD == 'release':
         CFLAGS += ' -O0 -gdwarf-2 -g'
         AFLAGS += ' -gdwarf-2'
     else:

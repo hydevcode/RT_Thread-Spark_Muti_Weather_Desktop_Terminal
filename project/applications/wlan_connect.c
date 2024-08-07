@@ -10,8 +10,8 @@
 #include <stdlib.h>
 
 
-char wlan_ssid[] = "wifi scan WIFI名";
-char wlan_password[] = "wifi join WIFI名 密码";
+char wlan_ssid[] = "wifi scan wifi名";
+char wlan_password[] = "wifi join wifi名 密码";
 #define NET_READY_TIME_OUT       (rt_tick_from_millisecond(15 * 1000))
 
 static void
@@ -77,7 +77,7 @@ rt_err_t wlan_connect_close(void)
 {
     rt_err_t result = RT_EOK;
     rt_wlan_unregister_event_handler(RT_WLAN_EVT_READY);
-    // rt_sem_delete(net_ready);
+
     rt_kprintf("wifi disconnect test!\n");
     result = rt_wlan_disconnect();
     if (result != RT_EOK)

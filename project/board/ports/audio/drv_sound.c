@@ -8,7 +8,10 @@
  */
 
 #include <board.h>
-
+#include <rtthread.h>
+#include <rtdevice.h>
+#include <drv_gpio.h>
+#include "stm32f4xx_hal_i2s.h"
 #include "drv_sound.h"
 #include "drv_es8388.h"
 
@@ -67,7 +70,7 @@ static void I2S3_Init(void)
     PeriphClkInitStruct.PLLI2S.PLLI2SR = 2;
     if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
     {
-        Error_Handler();
+        // Error_Handler();
     }
     HAL_I2S_DeInit(&I2S3_Handler);
 
@@ -82,7 +85,7 @@ static void I2S3_Init(void)
     I2S3_Handler.Init.FullDuplexMode = I2S_FULLDUPLEXMODE_ENABLE;
     if (HAL_I2S_Init(&I2S3_Handler) != HAL_OK)
     {
-        Error_Handler();
+        // Error_Handler();
     }
 
     SET_BIT(I2S3_Handler.Instance->CR2, SPI_CR2_TXDMAEN);
@@ -511,4 +514,4 @@ int rt_hw_sound_init(void)
     return RT_EOK;
 }
 
-// INIT_DEVICE_EXPORT(rt_hw_sound_init);
+INIT_DEVICE_EXPORT(rt_hw_sound_init);

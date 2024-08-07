@@ -64,7 +64,7 @@
 
 #define RT_USING_COMPONENTS_INIT
 #define RT_USING_USER_MAIN
-#define RT_MAIN_THREAD_STACK_SIZE 6144
+#define RT_MAIN_THREAD_STACK_SIZE 2048
 #define RT_MAIN_THREAD_PRIORITY 10
 #define RT_USING_MSH
 #define RT_USING_FINSH
@@ -110,6 +110,10 @@
 #define RT_USING_RTC
 #define RT_USING_SOFT_RTC
 #define RT_USING_SPI
+#define RT_USING_AUDIO
+#define RT_AUDIO_REPLAY_MP_BLOCK_SIZE 4096
+#define RT_AUDIO_REPLAY_MP_BLOCK_COUNT 2
+#define RT_AUDIO_RECORD_PIPE_SIZE 2048
 #define RT_USING_WIFI
 #define RT_WLAN_DEVICE_STA_NAME "wlan0"
 #define RT_WLAN_DEVICE_AP_NAME "wlan1"
@@ -211,8 +215,8 @@
 #define RT_LWIP_UDP_PCB_NUM 4
 #define RT_LWIP_TCP_PCB_NUM 4
 #define RT_LWIP_TCP_SEG_NUM 40
-#define RT_LWIP_TCP_SND_BUF 8196
-#define RT_LWIP_TCP_WND 8196
+#define RT_LWIP_TCP_SND_BUF 4096
+#define RT_LWIP_TCP_WND 4096
 #define RT_LWIP_TCPTHREAD_PRIORITY 10
 #define RT_LWIP_TCPTHREAD_MBOX_SIZE 8
 #define RT_LWIP_TCPTHREAD_STACKSIZE 1024
@@ -241,6 +245,15 @@
 
 /* Using USB legacy version */
 
+#define RT_USING_USB
+#define RT_USING_USB_HOST
+#define RT_USING_USB_DEVICE
+#define RT_USBD_THREAD_STACK_SZ 4096
+#define USB_VENDOR_ID 0x0FFE
+#define USB_PRODUCT_ID 0x0001
+#define RT_USB_DEVICE_COMPOSITE
+#define RT_USB_DEVICE_NONE
+#define RT_USB_DEVICE_AUDIO
 /* end of Using USB legacy version */
 /* end of RT-Thread Components */
 
@@ -298,6 +311,52 @@
 
 /* IoT Cloud */
 
+#define PKG_USING_ALI_IOTKIT
+#define PKG_USING_ALI_IOTKIT_PRODUCT_KEY "123"
+#define PKG_USING_ALI_IOTKIT_PRODUCT_SECRET "1234"
+#define PKG_USING_ALI_IOTKIT_DEVICE_NAME "RT_STM32F407_RT_Spark"
+#define PKG_USING_ALI_IOTKIT_DEVICE_SECRET "12345"
+#define PKG_ALI_IOTKIT_SELECT_ITEM
+#define PLATFORM_HAS_STDINT
+#define PLATFORM_HAS_DYNMEM
+#define PLATFORM_HAS_OS
+#define INFRA_STRING
+#define INFRA_NET
+#define INFRA_LIST
+#define INFRA_LOG_NETWORK_PAYLOAD
+#define INFRA_LOG
+
+/* Log Configurations */
+
+#define INFRA_LOG_MUTE_FLW
+#define INFRA_LOG_MUTE_DBG
+#define INFRA_LOG_MUTE_INF
+#define INFRA_LOG_MUTE_WRN
+#define INFRA_LOG_MUTE_CRT
+/* end of Log Configurations */
+#define INFRA_TIMER
+#define INFRA_CJSON
+#define INFRA_SHA256
+#define INFRA_REPORT
+#define INFRA_COMPAT
+#define INFRA_CLASSIC
+#define DEV_SIGN
+#define MQTT_COMM_ENABLED
+
+/* MQTT Configurations */
+
+#define MQTT_DEFAULT_IMPL
+#define MQTT_DIRECT
+/* end of MQTT Configurations */
+#define DEVICE_MODEL_CLASSIC
+#define LOG_REPORT_TO_CLOUD
+#define DEVICE_MODEL_ENABLED
+
+/* Device Model Configurations */
+
+/* end of Device Model Configurations */
+#define PKG_USING_ALI_IOTKIT_V30002
+#define PKG_ALI_IOTKIT_VER_NUM 0x30002
 /* end of IoT Cloud */
 /* end of IoT - internet of things */
 
@@ -309,6 +368,8 @@
 
 /* JSON: JavaScript Object Notation, a lightweight data-interchange format */
 
+#define PKG_USING_CJSON
+#define PKG_USING_CJSON_V1717
 #define PKG_USING_AGILE_JSMN
 #define PKG_USING_AGILE_JSMN_V101
 #define PKG_AGILE_JSMN_VER_NUM 0x10001
@@ -393,6 +454,8 @@
 
 #define PKG_USING_AHT10
 #define PKG_USING_AHT10_LATEST_VERSION
+#define PKG_USING_AP3216C
+#define PKG_USING_AP3216C_LATEST_VERSION
 /* end of sensors drivers */
 
 /* touch drivers */
@@ -483,6 +546,7 @@
 #define BSP_USING_LVGL_DEMO
 #define BSP_USING_RW007_WLAN
 #define BSP_USING_AHT21
+#define BSP_USING_AP3216C
 /* end of Onboard Peripheral Drivers */
 
 /* On-chip Peripheral Drivers */
@@ -498,6 +562,9 @@
 #define BSP_USING_SPI
 #define BSP_USING_SPI2
 #define BSP_USING_I2C
+#define BSP_USING_I2C2
+#define BSP_I2C2_SCL_PIN 81
+#define BSP_I2C2_SDA_PIN 80
 #define BSP_USING_I2C3
 #define BSP_I2C3_SCL_PIN 64
 #define BSP_I2C3_SDA_PIN 65
