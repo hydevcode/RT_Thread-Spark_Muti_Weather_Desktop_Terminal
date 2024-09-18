@@ -29,7 +29,6 @@ documentation/html
 *.su
 #source insight 4 project files
 *.si4project
-packages
 dist
 rt-studio-project
 cconfig.h
